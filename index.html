@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EnglishEase AI - Learn English Step-by-Step</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              200: '#a7f3d0',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46'
+            },
+            accent: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="text-slate-800 antialiased flex flex-col min-h-screen">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('welcome')">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-accent-500 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+            <i data-lucide="sparkles" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <span class="text-xl font-bold font-heading tracking-tight bg-gradient-to-r from-brand-700 via-brand-600 to-accent-600 bg-clip-text text-transparent">
+              EnglishEase AI
+            </span>
+            <span class="block text-[11px] font-medium text-slate-500">Learn English Step-by-Step</span>
+          </div>
+        </div>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden md:flex items-center gap-1 text-sm font-semibold">
+          <button onclick="navigateTo('dashboard')" class="nav-btn px-3 py-2 rounded-lg text-slate-600 hover:text-brand-600 hover:bg-slate-100 flex items-center gap-1.5 transition">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
+          </button>
+          <button onclick="navigateTo('basics')" class="nav-btn px-3 py-2 rounded-lg text-slate-600 hover:text-brand-600 hover:bg-slate-100 flex items-center gap-1.5 transition">
+            <i data-lucide="book-a" class="w-4 h-4"></i> Basics
+          </button>
+          <button onclick="navigateTo('vocabulary')" class="nav-btn px-3 py-2 rounded-lg text-slate-600 hover:text-brand-600 hover:bg-slate-100 flex items-center gap-1.5 transition">
+            <i data-lucide="layers" class="w-4 h-4"></i> Vocabulary
+          </button>
+          <button onclick="navigateTo('grammar')" class="nav-btn px-3 py-2 rounded-lg text-slate-600 hover:text-brand-600 hover:bg-slate-100 flex items-center gap-1.5 transition">
+            <i data-lucide="git-branch" class="w-4 h-4"></i> Grammar
+          </button>
+          <button onclick="navigateTo('sentence-builder')" class="nav-btn px-3 py-2 rounded-lg text-slate-600 hover:text-brand-600 hover:bg-slate-100 flex items-center gap-1.5 transition">
+            <i data-lucide="puzzle" class="w-4 h-4"></i> Sentence Builder
+          </button>
+          <button onclick="navigateTo('speaking')" class="nav-btn px-3 py-2 rounded-lg text-slate-600 hover:text-brand-600 hover:bg-slate-100 flex items-center gap-1.5 transition">
+            <i data-lucide="mic" class="w-4 h-4"></i> Speaking AI
+          </button>
+        </nav>
+
+        <!-- Right Action Items: Streak, Level, Settings -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <!-- Streak Indicator -->
+          <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full badge-streak text-amber-900 text-xs font-bold shadow-xs" title="Daily Practice Streak">
+            <span>🔥</span>
+            <span id="nav-streak">3 Days</span>
+          </div>
+
+          <!-- XP Points -->
+          <div class="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold" title="Total XP Earned">
+            <span>⭐</span>
+            <span id="nav-xp">140 XP</span>
+          </div>
+
+          <!-- Level Badge (Clickable to switch level) -->
+          <button onclick="openOnboardingModal()" class="px-2.5 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-semibold hover:bg-indigo-100 transition flex items-center gap-1" title="Click to change English level">
+            <span id="nav-level-badge">Beginner</span>
+            <i data-lucide="chevron-down" class="w-3 h-3"></i>
+          </button>
+
+          <!-- Settings Button -->
+          <button onclick="openSettingsModal()" class="p-2 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition" title="App Settings & AI Configuration">
+            <i data-lucide="settings" class="w-4 h-4"></i>
+          </button>
+
+          <!-- Mobile Menu Toggle Button -->
+          <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 bg-white px-4 py-3 space-y-1">
+      <button onclick="navigateTo('dashboard'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-slate-700 font-medium hover:bg-slate-50 flex items-center gap-2">
+        <i data-lucide="layout-dashboard" class="w-4 h-4 text-brand-600"></i> Dashboard
+      </button>
+      <button onclick="navigateTo('basics'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-slate-700 font-medium hover:bg-slate-50 flex items-center gap-2">
+        <i data-lucide="book-a" class="w-4 h-4 text-brand-600"></i> English Basics
+      </button>
+      <button onclick="navigateTo('vocabulary'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-slate-700 font-medium hover:bg-slate-50 flex items-center gap-2">
+        <i data-lucide="layers" class="w-4 h-4 text-brand-600"></i> Real-Life Vocabulary
+      </button>
+      <button onclick="navigateTo('grammar'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-slate-700 font-medium hover:bg-slate-50 flex items-center gap-2">
+        <i data-lucide="git-branch" class="w-4 h-4 text-brand-600"></i> Grammar from Basics
+      </button>
+      <button onclick="navigateTo('sentence-builder'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-slate-700 font-medium hover:bg-slate-50 flex items-center gap-2">
+        <i data-lucide="puzzle" class="w-4 h-4 text-brand-600"></i> Sentence Builder
+      </button>
+      <button onclick="navigateTo('speaking'); toggleMobileMenu()" class="w-full text-left px-3 py-2 rounded-lg text-slate-700 font-medium hover:bg-slate-50 flex items-center gap-2">
+        <i data-lucide="mic" class="w-4 h-4 text-brand-600"></i> Speaking Practice with AI
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN APP CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- ================= VIEW 1: WELCOME & LANDING ================= -->
+    <section id="view-welcome" class="space-y-12">
+      <!-- Hero Section -->
+      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-600 via-teal-600 to-indigo-700 text-white p-8 sm:p-12 shadow-xl shadow-emerald-900/10">
+        <div class="relative z-10 max-w-3xl space-y-6">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-emerald-100 text-xs sm:text-sm font-semibold border border-white/20">
+            <span>✨</span> No Grammar Background Needed • 100% Beginner Friendly
+          </div>
+          
+          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold font-heading tracking-tight leading-tight">
+            Learn English Easily with AI
+          </h1>
+          
+          <p class="text-base sm:text-xl text-emerald-100 leading-relaxed font-normal">
+            Learn English step by step through simple explanations, examples, practice, and friendly conversation.
+          </p>
+
+          <!-- Main CTA Buttons (Required by prompt) -->
+          <div class="flex flex-wrap gap-4 pt-2">
+            <button onclick="startOnboardingFlow()" class="px-6 py-3.5 rounded-xl bg-white text-emerald-800 font-bold shadow-lg hover:bg-emerald-50 hover:shadow-xl transition transform active:scale-95 flex items-center gap-2">
+              <i data-lucide="play-circle" class="w-5 h-5 text-emerald-600"></i>
+              Start Learning
+            </button>
+            <button onclick="navigateTo('sentence-builder')" class="px-6 py-3.5 rounded-xl bg-emerald-500/30 hover:bg-emerald-500/40 text-white font-bold border border-white/30 backdrop-blur-md transition transform active:scale-95 flex items-center gap-2">
+              <i data-lucide="puzzle" class="w-5 h-5"></i>
+              Practice English
+            </button>
+            <button onclick="navigateTo('speaking')" class="px-6 py-3.5 rounded-xl bg-indigo-500/40 hover:bg-indigo-500/60 text-white font-bold border border-indigo-200/40 backdrop-blur-md transition transform active:scale-95 flex items-center gap-2">
+              <i data-lucide="bot" class="w-5 h-5 text-indigo-200"></i>
+              Talk with AI
+            </button>
+          </div>
+        </div>
+
+        <!-- Decorative background shapes -->
+        <div class="absolute -right-20 -bottom-20 w-96 h-96 rounded-full bg-white/10 blur-3xl pointer-events-none"></div>
+        <div class="absolute right-10 top-10 w-48 h-48 rounded-full bg-emerald-400/20 blur-2xl pointer-events-none"></div>
+      </div>
+
+      <!-- Teaching Style Highlights (As requested in prompt) -->
+      <div>
+        <div class="text-center max-w-2xl mx-auto mb-8 space-y-2">
+          <h2 class="text-2xl sm:text-3xl font-bold font-heading text-slate-800">Designed for Comfort & Confidence</h2>
+          <p class="text-slate-600 text-sm sm:text-base">We never make you feel embarrassed about mistakes. Everything is broken down into simple, fun steps.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover-lift space-y-3">
+            <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">
+              <i data-lucide="smile" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800">Super Simple English</h3>
+            <p class="text-slate-600 text-sm leading-relaxed">No complicated terminology. We explain words and grammar like a caring friend would.</p>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover-lift space-y-3">
+            <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
+              <i data-lucide="volume-2" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800">Listen & Pronounce</h3>
+            <p class="text-slate-600 text-sm leading-relaxed">Click to hear clear audio pronunciation for every word and sentence with easy phonetic guides.</p>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover-lift space-y-3">
+            <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">
+              <i data-lucide="puzzle" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800">Interactive Sentence Builder</h3>
+            <p class="text-slate-600 text-sm leading-relaxed">Click word chips like building blocks to form correct English sentences naturally.</p>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover-lift space-y-3">
+            <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold">
+              <i data-lucide="heart-handshake" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800">Zero Embarrassment AI</h3>
+            <p class="text-slate-600 text-sm leading-relaxed">Made a mistake? Our friendly AI says "Good try!" and gently shows you the natural way to say it.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Curriculum Preview Cards -->
+      <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h3 class="text-xl font-bold font-heading text-slate-800">What You Will Learn</h3>
+            <p class="text-slate-500 text-sm">Explore our 5 complete modules designed to take you from zero to conversational.</p>
+          </div>
+          <button onclick="navigateTo('dashboard')" class="px-5 py-2.5 rounded-xl bg-slate-900 text-white font-semibold text-sm hover:bg-slate-800 transition flex items-center gap-2">
+            Open Dashboard <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div onclick="navigateTo('basics')" class="p-4 rounded-xl bg-slate-50 border border-slate-100 hover:bg-emerald-50/50 hover:border-emerald-200 transition cursor-pointer space-y-2">
+            <div class="flex items-center gap-2 text-emerald-700 font-bold text-sm">
+              <i data-lucide="book-a" class="w-4 h-4"></i> 1. English Basics
+            </div>
+            <p class="text-xs text-slate-600">Alphabet, numbers, colors, family, verbs, everyday objects & pronunciation.</p>
+          </div>
+          <div onclick="navigateTo('vocabulary')" class="p-4 rounded-xl bg-slate-50 border border-slate-100 hover:bg-blue-50/50 hover:border-blue-200 transition cursor-pointer space-y-2">
+            <div class="flex items-center gap-2 text-blue-700 font-bold text-sm">
+              <i data-lucide="layers" class="w-4 h-4"></i> 2. Real-Life Vocabulary
+            </div>
+            <p class="text-xs text-slate-600">12 real situations: College, Office, Shopping, Hospital, Friends & Interviews.</p>
+          </div>
+          <div onclick="navigateTo('grammar')" class="p-4 rounded-xl bg-slate-50 border border-slate-100 hover:bg-indigo-50/50 hover:border-indigo-200 transition cursor-pointer space-y-2">
+            <div class="flex items-center gap-2 text-indigo-700 font-bold text-sm">
+              <i data-lucide="git-branch" class="w-4 h-4"></i> 3. Grammar from Basics
+            </div>
+            <p class="text-xs text-slate-600">Nouns, pronouns, tenses, questions & common mistakes without jargon.</p>
+          </div>
+          <div onclick="navigateTo('sentence-builder')" class="p-4 rounded-xl bg-slate-50 border border-slate-100 hover:bg-purple-50/50 hover:border-purple-200 transition cursor-pointer space-y-2">
+            <div class="flex items-center gap-2 text-purple-700 font-bold text-sm">
+              <i data-lucide="puzzle" class="w-4 h-4"></i> 4. Sentence Builder
+            </div>
+            <p class="text-xs text-slate-600">Arrange word blocks: from "I am happy" to past, present, and future forms.</p>
+          </div>
+          <div onclick="navigateTo('speaking')" class="p-4 rounded-xl bg-slate-50 border border-slate-100 hover:bg-amber-50/50 hover:border-amber-200 transition cursor-pointer space-y-2 md:col-span-2">
+            <div class="flex items-center gap-2 text-amber-700 font-bold text-sm">
+              <i data-lucide="mic" class="w-4 h-4"></i> 5. Speaking Practice with AI
+            </div>
+            <p class="text-xs text-slate-600">Voice & text conversation partner for restaurant orders, college life, job interviews, and small talk.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 2: ONBOARDING (LEVEL & GOAL SELECTION) ================= -->
+    <section id="view-onboarding" class="hidden max-w-2xl mx-auto space-y-8">
+      <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 shadow-lg space-y-8">
+        <!-- Progress Steps -->
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+          <div>
+            <h2 class="text-2xl font-bold font-heading text-slate-800">Customize Your Learning Path</h2>
+            <p class="text-slate-500 text-sm">Tell us your level and goals so AI can tailor every lesson to you.</p>
+          </div>
+          <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-sm">
+            AI
+          </div>
+        </div>
+
+        <!-- Question 1: English Level -->
+        <div class="space-y-4">
+          <label class="block text-sm font-bold uppercase tracking-wider text-slate-500">
+            Step 1: What is your current English level?
+          </label>
+          <div class="grid grid-cols-1 gap-3">
+            <label class="level-option flex items-start gap-4 p-4 rounded-2xl border-2 border-slate-200 hover:border-brand-500 cursor-pointer transition bg-white" onclick="selectLevel('Beginner')">
+              <input type="radio" name="user_level" value="Beginner" checked class="mt-1 text-brand-600 focus:ring-brand-500" />
+              <div>
+                <div class="font-bold text-slate-800 flex items-center gap-2">
+                  Beginner <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-medium">Recommended</span>
+                </div>
+                <div class="text-slate-500 text-xs mt-0.5">I am starting from zero or know only very few isolated words.</div>
+              </div>
+            </label>
+
+            <label class="level-option flex items-start gap-4 p-4 rounded-2xl border-2 border-slate-200 hover:border-brand-500 cursor-pointer transition bg-white" onclick="selectLevel('Basic')">
+              <input type="radio" name="user_level" value="Basic" class="mt-1 text-brand-600 focus:ring-brand-500" />
+              <div>
+                <div class="font-bold text-slate-800">Basic</div>
+                <div class="text-slate-500 text-xs mt-0.5">I know common words, but struggle to form full sentences and speak.</div>
+              </div>
+            </label>
+
+            <label class="level-option flex items-start gap-4 p-4 rounded-2xl border-2 border-slate-200 hover:border-brand-500 cursor-pointer transition bg-white" onclick="selectLevel('Intermediate')">
+              <input type="radio" name="user_level" value="Intermediate" class="mt-1 text-brand-600 focus:ring-brand-500" />
+              <div>
+                <div class="font-bold text-slate-800">Intermediate</div>
+                <div class="text-slate-500 text-xs mt-0.5">I can make simple sentences and want to speak fluently without fear.</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Question 2: Improvement Goals -->
+        <div class="space-y-4">
+          <label class="block text-sm font-bold uppercase tracking-wider text-slate-500">
+            Step 2: What do you want to improve? (Choose any)
+          </label>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="goals-container">
+            <button type="button" class="goal-chip px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:border-brand-500 active bg-emerald-50 border-emerald-500 text-emerald-800" data-goal="Speaking" onclick="toggleGoal(this)">
+              🗣️ Speaking
+            </button>
+            <button type="button" class="goal-chip px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:border-brand-500" data-goal="Grammar" onclick="toggleGoal(this)">
+              📖 Grammar
+            </button>
+            <button type="button" class="goal-chip px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:border-brand-500" data-goal="Vocabulary" onclick="toggleGoal(this)">
+              📚 Vocabulary
+            </button>
+            <button type="button" class="goal-chip px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:border-brand-500" data-goal="Pronunciation" onclick="toggleGoal(this)">
+              🔊 Pronunciation
+            </button>
+            <button type="button" class="goal-chip px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:border-brand-500" data-goal="Reading" onclick="toggleGoal(this)">
+              👓 Reading
+            </button>
+            <button type="button" class="goal-chip px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:border-brand-500" data-goal="Writing" onclick="toggleGoal(this)">
+              ✍️ Writing
+            </button>
+            <button type="button" class="goal-chip px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:border-brand-500" data-goal="Daily Conversation" onclick="toggleGoal(this)">
+              💬 Conversation
+            </button>
+            <button type="button" class="goal-chip px-3 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:border-brand-500" data-goal="All" onclick="toggleGoal(this)">
+              🌟 All of These
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit & Path Generation CTA -->
+        <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+          <button onclick="navigateTo('welcome')" class="px-4 py-2 text-slate-500 text-sm font-semibold hover:text-slate-800">
+            Cancel
+          </button>
+          <button onclick="finishOnboarding()" class="px-6 py-3 rounded-xl bg-brand-600 text-white font-bold text-sm shadow-md hover:bg-brand-700 transition flex items-center gap-2">
+            <i data-lucide="sparkles" class="w-4 h-4"></i> Create My AI Learning Path
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 3: DASHBOARD ================= -->
+    <section id="view-dashboard" class="hidden space-y-8">
+      <!-- Greeting & Streak Top Banner -->
+      <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="space-y-2">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+            Personalized Path Active
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-bold font-heading text-slate-800">
+            Welcome, English Learner! 🚀
+          </h2>
+          <p class="text-slate-600 text-sm">
+            Step by step, one day at a time. You are doing fantastic!
+          </p>
+        </div>
+
+        <!-- Quick Action: Continue Learning -->
+        <button onclick="continueLearning()" class="w-full md:w-auto px-6 py-3.5 rounded-2xl bg-gradient-to-r from-brand-600 to-accent-600 text-white font-bold shadow-lg hover:shadow-xl transition transform active:scale-95 flex items-center justify-center gap-2">
+          <i data-lucide="play" class="w-5 h-5 fill-current"></i>
+          Continue Learning
+        </button>
+      </div>
+
+      <!-- Dashboard Stats (Required by prompt) -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <!-- Current Level -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
+          <span class="text-slate-500 text-xs font-medium">Current Level</span>
+          <div class="text-lg font-bold text-slate-800" id="dash-level">Beginner</div>
+          <span class="text-[11px] text-emerald-600 font-semibold">Stage 1</span>
+        </div>
+
+        <!-- Practice Streak -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
+          <span class="text-slate-500 text-xs font-medium">Practice Streak</span>
+          <div class="text-lg font-bold text-amber-600 flex items-center gap-1">
+            🔥 <span id="dash-streak">3 Days</span>
+          </div>
+          <span class="text-[11px] text-slate-400">Keep it burning!</span>
+        </div>
+
+        <!-- Words Learned -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
+          <span class="text-slate-500 text-xs font-medium">Words Learned</span>
+          <div class="text-lg font-bold text-blue-600" id="dash-words">26 Words</div>
+          <span class="text-[11px] text-blue-500 font-semibold">+4 today</span>
+        </div>
+
+        <!-- Lessons Completed -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
+          <span class="text-slate-500 text-xs font-medium">Lessons Done</span>
+          <div class="text-lg font-bold text-indigo-600" id="dash-lessons">5 Completed</div>
+          <span class="text-[11px] text-indigo-500 font-semibold">Great work</span>
+        </div>
+
+        <!-- Total XP -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
+          <span class="text-slate-500 text-xs font-medium">Experience (XP)</span>
+          <div class="text-lg font-bold text-emerald-600" id="dash-xp">140 XP</div>
+          <span class="text-[11px] text-emerald-600 font-semibold">Rank: Bronze</span>
+        </div>
+
+        <!-- Overall Progress -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-1">
+          <span class="text-slate-500 text-xs font-medium">Goal Progress</span>
+          <div class="text-lg font-bold text-purple-600" id="dash-progress">28%</div>
+          <div class="w-full bg-slate-100 rounded-full h-1.5 mt-2">
+            <div class="bg-purple-600 h-1.5 rounded-full" style="width: 28%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Today's Lesson & Recommended Lesson Grid (Required) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Today's Lesson Card -->
+        <div class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-3xl border border-emerald-200 p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 rounded-full bg-emerald-200 text-emerald-800 text-xs font-bold uppercase tracking-wider">
+              Today's Lesson
+            </span>
+            <span class="text-xs text-emerald-700 font-medium flex items-center gap-1">
+              <i data-lucide="clock" class="w-3.5 h-3.5"></i> 5 Mins Practice
+            </span>
+          </div>
+
+          <div class="space-y-1">
+            <h3 class="text-xl font-bold font-heading text-slate-800" id="today-lesson-title">
+              Common Daily-Use Words & Greetings
+            </h3>
+            <p class="text-slate-600 text-xs sm:text-sm leading-relaxed" id="today-lesson-desc">
+              Master essential polite words: "Please", "Thank you", "Sorry", and "Excuse me" with easy pronunciation.
+            </p>
+          </div>
+
+          <div class="pt-2 flex items-center justify-between">
+            <span class="text-xs text-slate-500">Reward: +20 XP</span>
+            <button onclick="startTodayLesson()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition flex items-center gap-1.5">
+              Start Lesson <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Recommended Lesson Card -->
+        <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-3xl border border-indigo-200 p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 rounded-full bg-indigo-200 text-indigo-800 text-xs font-bold uppercase tracking-wider">
+              Recommended for You
+            </span>
+            <span class="text-xs text-indigo-700 font-medium flex items-center gap-1">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> AI Match
+            </span>
+          </div>
+
+          <div class="space-y-1">
+            <h3 class="text-xl font-bold font-heading text-slate-800" id="rec-lesson-title">
+              Sentence Builder: "I am happy" to "I am going"
+            </h3>
+            <p class="text-slate-600 text-xs sm:text-sm leading-relaxed" id="rec-lesson-desc">
+              Assemble simple English sentences by connecting words in the natural order without getting confused.
+            </p>
+          </div>
+
+          <div class="pt-2 flex items-center justify-between">
+            <span class="text-xs text-slate-500">Interactive Game</span>
+            <button onclick="navigateTo('sentence-builder')" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md transition flex items-center gap-1.5">
+              Play Now <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Learning Modules Navigation -->
+      <div class="space-y-4">
+        <h3 class="text-lg font-bold font-heading text-slate-800">Explore Learning Modules</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <!-- Module 1: Basics -->
+          <div onclick="navigateTo('basics')" class="bg-white p-5 rounded-2xl border border-slate-200 hover-lift cursor-pointer space-y-3">
+            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">
+              <i data-lucide="book-a" class="w-5 h-5"></i>
+            </div>
+            <h4 class="font-bold text-slate-800 text-base">English Basics</h4>
+            <p class="text-xs text-slate-500">Alphabet, numbers, colors, family, objects & verbs.</p>
+          </div>
+
+          <!-- Module 2: Vocabulary -->
+          <div onclick="navigateTo('vocabulary')" class="bg-white p-5 rounded-2xl border border-slate-200 hover-lift cursor-pointer space-y-3">
+            <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
+              <i data-lucide="layers" class="w-5 h-5"></i>
+            </div>
+            <h4 class="font-bold text-slate-800 text-base">Vocabulary</h4>
+            <p class="text-xs text-slate-500">12 real situations: home, college, shopping, office & hospital.</p>
+          </div>
+
+          <!-- Module 3: Grammar -->
+          <div onclick="navigateTo('grammar')" class="bg-white p-5 rounded-2xl border border-slate-200 hover-lift cursor-pointer space-y-3">
+            <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">
+              <i data-lucide="git-branch" class="w-5 h-5"></i>
+            </div>
+            <h4 class="font-bold text-slate-800 text-base">Grammar</h4>
+            <p class="text-xs text-slate-500">15 zero-jargon lessons: nouns, verbs, tenses & mistakes.</p>
+          </div>
+
+          <!-- Module 4: Sentence Builder -->
+          <div onclick="navigateTo('sentence-builder')" class="bg-white p-5 rounded-2xl border border-slate-200 hover-lift cursor-pointer space-y-3">
+            <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center font-bold">
+              <i data-lucide="puzzle" class="w-5 h-5"></i>
+            </div>
+            <h4 class="font-bold text-slate-800 text-base">Sentence Builder</h4>
+            <p class="text-xs text-slate-500">Arrange word blocks interactively to build sentences.</p>
+          </div>
+
+          <!-- Module 5: Speaking Practice -->
+          <div onclick="navigateTo('speaking')" class="bg-white p-5 rounded-2xl border border-slate-200 hover-lift cursor-pointer space-y-3">
+            <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold">
+              <i data-lucide="mic" class="w-5 h-5"></i>
+            </div>
+            <h4 class="font-bold text-slate-800 text-base">Speaking AI</h4>
+            <p class="text-xs text-slate-500">Practice speech with an encouraging AI tutor.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Encouraging Beginner Tip Card -->
+      <div class="bg-amber-50 rounded-2xl border border-amber-200 p-5 flex items-start gap-4">
+        <span class="text-2xl">💡</span>
+        <div class="space-y-1">
+          <h4 class="text-sm font-bold text-amber-900">Beginner Friendly Tip</h4>
+          <p class="text-xs text-amber-800 leading-relaxed">
+            "Do not worry about speaking perfect English. Even native speakers make small mistakes! Focus on being understood, and each word you learn is a great victory."
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 4: MODULE 1 - ENGLISH BASICS ================= -->
+    <section id="view-basics" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-bold font-heading text-slate-800">1. English Basics</h2>
+          <p class="text-slate-600 text-sm">Everyday fundamental words with clear pronunciations, meanings, and examples.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <!-- Quick Search -->
+          <div class="relative">
+            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-3"></i>
+            <input type="text" id="basics-search" placeholder="Search words..." oninput="filterBasics()" class="pl-9 pr-4 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 w-48 sm:w-64" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Category Tabs (Alphabet, Numbers, Colors, Days/Months, Family, Objects, Verbs, Adjectives, Daily words) -->
+      <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-none" id="basics-tabs">
+        <button onclick="switchBasicsTab('alphabet')" class="basics-tab-btn px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap bg-brand-600 text-white shadow-xs" data-tab="alphabet">
+          Alphabet (A-Z)
+        </button>
+        <button onclick="switchBasicsTab('numbers')" class="basics-tab-btn px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap bg-white text-slate-700 hover:bg-slate-100 border border-slate-200" data-tab="numbers">
+          Numbers (1-100)
+        </button>
+        <button onclick="switchBasicsTab('colors')" class="basics-tab-btn px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap bg-white text-slate-700 hover:bg-slate-100 border border-slate-200" data-tab="colors">
+          Colors
+        </button>
+        <button onclick="switchBasicsTab('daysMonths')" class="basics-tab-btn px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap bg-white text-slate-700 hover:bg-slate-100 border border-slate-200" data-tab="daysMonths">
+          Days & Months
+        </button>
+        <button onclick="switchBasicsTab('family')" class="basics-tab-btn px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap bg-white text-slate-700 hover:bg-slate-100 border border-slate-200" data-tab="family">
+          Family Members
+        </button>
+        <button onclick="switchBasicsTab('commonObjects')" class="basics-tab-btn px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap bg-white text-slate-700 hover:bg-slate-100 border border-slate-200" data-tab="commonObjects">
+          Common Objects
+        </button>
+        <button onclick="switchBasicsTab('verbs')" class="basics-tab-btn px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap bg-white text-slate-700 hover:bg-slate-100 border border-slate-200" data-tab="verbs">
+          Basic Verbs
+        </button>
+        <button onclick="switchBasicsTab('adjectives')" class="basics-tab-btn px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap bg-white text-slate-700 hover:bg-slate-100 border border-slate-200" data-tab="adjectives">
+          Common Adjectives
+        </button>
+        <button onclick="switchBasicsTab('dailyWords')" class="basics-tab-btn px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap bg-white text-slate-700 hover:bg-slate-100 border border-slate-200" data-tab="dailyWords">
+          Daily-Use Words
+        </button>
+      </div>
+
+      <!-- Basics Content Grid -->
+      <div id="basics-cards-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Rendered by JavaScript -->
+      </div>
+    </section>
+
+    <!-- ================= VIEW 5: MODULE 2 - VOCABULARY ================= -->
+    <section id="view-vocabulary" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-bold font-heading text-slate-800">2. Real-Life Vocabulary</h2>
+          <p class="text-slate-600 text-sm">Words you actually use in real situations: college, office, shopping, travel, and more.</p>
+        </div>
+        <button onclick="generateAIVocabExercise()" class="px-4 py-2 rounded-xl bg-accent-600 hover:bg-accent-700 text-white font-bold text-xs shadow-md transition flex items-center gap-1.5">
+          <i data-lucide="sparkles" class="w-4 h-4"></i> AI Exercise Generator
+        </button>
+      </div>
+
+      <!-- 12 Real-Life Situations Pill Filter -->
+      <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-none" id="vocab-category-pills">
+        <!-- Rendered by JavaScript -->
+      </div>
+
+      <!-- Vocab Items List -->
+      <div id="vocab-cards-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Rendered by JavaScript -->
+      </div>
+    </section>
+
+    <!-- ================= VIEW 6: MODULE 3 - GRAMMAR ================= -->
+    <section id="view-grammar" class="hidden space-y-6">
+      <div>
+        <h2 class="text-2xl sm:text-3xl font-bold font-heading text-slate-800">3. Grammar from Absolute Basics</h2>
+        <p class="text-slate-600 text-sm">No confusing jargon. Simple explanations, everyday examples, and practice questions.</p>
+      </div>
+
+      <!-- Grammar Topics Selector -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2" id="grammar-topic-chips">
+        <!-- Rendered by JavaScript -->
+      </div>
+
+      <!-- Active Grammar Lesson Card -->
+      <div id="grammar-lesson-container" class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+        <!-- Rendered by JavaScript -->
+      </div>
+    </section>
+
+    <!-- ================= VIEW 7: MODULE 4 - SENTENCE BUILDER ================= -->
+    <section id="view-sentence-builder" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-bold font-heading text-slate-800">4. Sentence Builder</h2>
+          <p class="text-slate-600 text-sm">Click word chips in the right order to build natural English sentences.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-slate-500">Level:</span>
+          <select id="sb-level-select" onchange="loadSentenceLevel(parseInt(this.value))" class="text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-200 bg-white">
+            <!-- 12 Levels options populated by JS -->
+          </select>
+        </div>
+      </div>
+
+      <!-- Interactive Game Board -->
+      <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 shadow-sm space-y-8">
+        <!-- Target Task -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
+              Target Sentence Goal
+            </span>
+            <button onclick="hintSentenceBuilder()" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
+              <i data-lucide="lightbulb" class="w-3.5 h-3.5"></i> Show Rule Hint
+            </button>
+          </div>
+          <h3 class="text-xl sm:text-2xl font-bold font-heading text-slate-800 pt-1" id="sb-target-translation">
+            Build: "I am happy."
+          </h3>
+          <p class="text-xs text-slate-500" id="sb-target-hint">Arrange words to describe feeling happy right now.</p>
+        </div>
+
+        <!-- Drop / Sentence Tray Area -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-xs font-semibold text-slate-500">
+            <span>Your Sentence Tray (Click words below to place here):</span>
+            <button onclick="resetSentenceTray()" class="text-red-500 hover:text-red-700 flex items-center gap-1">
+              <i data-lucide="rotate-ccw" class="w-3 h-3"></i> Clear Tray
+            </button>
+          </div>
+          <div id="sb-sentence-tray" class="min-h-[72px] p-4 rounded-2xl bg-slate-50 border-2 border-dashed border-slate-300 flex flex-wrap items-center gap-2 transition">
+            <span class="text-xs text-slate-400 italic" id="sb-tray-placeholder">Click words from the word bank below to place them here...</span>
+          </div>
+        </div>
+
+        <!-- Word Bank / Chips Selection Area -->
+        <div class="space-y-2">
+          <span class="text-xs font-semibold text-slate-500">Word Bank (Click a word to add it):</span>
+          <div id="sb-word-bank" class="flex flex-wrap gap-2.5 p-4 rounded-2xl bg-emerald-50/40 border border-emerald-100 min-h-[64px]">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Controls: Audio & Check Sentence -->
+        <div class="pt-2 flex flex-wrap items-center justify-between gap-4 border-t border-slate-100">
+          <button onclick="speakCurrentSentence()" class="px-4 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold text-xs transition flex items-center gap-1.5">
+            <i data-lucide="volume-2" class="w-4 h-4 text-brand-600"></i> Listen to Sentence
+          </button>
+          
+          <button onclick="checkSentenceBuilder()" class="px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md transition flex items-center gap-2">
+            <i data-lucide="check" class="w-4 h-4"></i> Check Sentence
+          </button>
+        </div>
+
+        <!-- AI Explanation & Feedback Panel -->
+        <div id="sb-feedback-panel" class="hidden p-5 rounded-2xl border space-y-2">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 8: MODULE 5 - SPEAKING PRACTICE WITH AI ================= -->
+    <section id="view-speaking" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-bold font-heading text-slate-800">5. Speaking Practice with AI</h2>
+          <p class="text-slate-600 text-sm">Have realistic English conversations. Your AI partner will gently guide and encourage you.</p>
+        </div>
+        <!-- Voice Audio Settings -->
+        <div class="flex items-center gap-3 bg-white px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700">
+          <label class="flex items-center gap-1.5 cursor-pointer">
+            <input type="checkbox" id="toggle-voice-reply" checked class="text-brand-600 rounded focus:ring-brand-500" />
+            <span>AI Voice Reply (Audio)</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Scenarios Selector Pills -->
+      <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-none" id="speaking-scenario-pills">
+        <!-- Rendered by JavaScript -->
+      </div>
+
+      <!-- Chat Screen Container -->
+      <div class="bg-white rounded-3xl border border-slate-200 shadow-sm flex flex-col h-[560px] overflow-hidden">
+        <!-- Chat Header -->
+        <div class="p-4 border-b border-slate-200 bg-slate-50/80 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-600 to-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-xs">
+              <i data-lucide="bot" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+                <span id="speaking-active-title">Introducing Yourself</span>
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              </div>
+              <div class="text-[11px] text-slate-500" id="speaking-active-desc">Practice name, origin & hobbies</div>
+            </div>
+          </div>
+
+          <button onclick="resetConversation()" class="text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1 px-2.5 py-1 rounded-lg border border-slate-200 bg-white">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Restart
+          </button>
+        </div>
+
+        <!-- Messages Area -->
+        <div id="speaking-chat-messages" class="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4 bg-slate-50/40">
+          <!-- Chat bubbles populated dynamically by JS -->
+        </div>
+
+        <!-- Suggested Starter Chips for Beginners -->
+        <div class="px-4 py-2 bg-white border-t border-slate-100">
+          <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Quick suggested replies (Click to say):</div>
+          <div id="speaking-starter-chips" class="flex flex-wrap gap-1.5">
+            <!-- Chips rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Voice & Text Input Box -->
+        <div class="p-3 sm:p-4 bg-white border-t border-slate-200">
+          <form onsubmit="handleSpeakingSubmit(event)" class="flex items-center gap-2">
+            <!-- Microphone Button for Speech-to-Text -->
+            <button type="button" id="mic-btn" onclick="toggleSpeechRecognition()" class="p-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center justify-center" title="Speak with Microphone">
+              <i data-lucide="mic" class="w-5 h-5" id="mic-icon"></i>
+            </button>
+
+            <!-- Text Input -->
+            <input type="text" id="speaking-input" placeholder="Type your sentence or click the microphone to speak..." class="flex-1 px-4 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 text-sm" />
+
+            <!-- Send Button -->
+            <button type="submit" class="px-5 py-3 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md transition flex items-center gap-1.5">
+              <span>Send</span>
+              <i data-lucide="send" class="w-4 h-4"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="mt-auto border-t border-slate-200 bg-white py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-slate-700">EnglishEase AI</span>
+        <span>• Step-by-Step English for Everyone</span>
+      </div>
+      <div>
+        Designed with patience & care for new English speakers.
+      </div>
+    </div>
+  </footer>
+
+  <!-- SETTINGS MODAL -->
+  <div id="settings-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-6 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="text-lg font-bold font-heading text-slate-800">Learning & AI Settings</h3>
+        <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">AI Engine Mode</label>
+          <select id="setting-ai-mode" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm">
+            <option value="builtin">Built-in Smart English Tutor (Instant & Free)</option>
+            <option value="gemini">Google Gemini AI (Live API Key)</option>
+          </select>
+          <p class="text-[11px] text-slate-500 mt-1">Built-in smart tutor is preloaded with gentle error detection and instant speech prompts.</p>
+        </div>
+
+        <div id="gemini-key-field" class="space-y-1">
+          <label class="block text-xs font-bold text-slate-700">Gemini API Key (Optional)</label>
+          <input type="password" id="setting-api-key" placeholder="AIzaSy..." class="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm" />
+          <p class="text-[11px] text-slate-400">If left blank, the app runs offline with our built-in natural dialogue engine.</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Speech Speed Rate</label>
+          <input type="range" id="setting-speech-rate" min="0.6" max="1.2" step="0.1" value="0.85" class="w-full" />
+          <div class="flex justify-between text-[11px] text-slate-400">
+            <span>Slow (Beginner friendly)</span>
+            <span>Normal</span>
+          </div>
+        </div>
+
+        <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+          <button onclick="resetAllProgress()" class="text-xs text-red-600 hover:text-red-700 font-semibold">
+            Reset Progress
+          </button>
+          <button onclick="saveSettings()" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-md">
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VOCABULARY PRACTICE MODAL -->
+  <div id="vocab-practice-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 space-y-6 shadow-2xl" id="vocab-practice-modal-body">
+      <!-- Populated dynamically -->
+    </div>
+  </div>
+
+  <!-- Load Data and App Scripts -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
